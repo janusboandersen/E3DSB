@@ -6,6 +6,7 @@
 \usepackage{color}
 \usepackage{amsfonts, amsmath, amssymb}
 \usepackage{float} %ensures that figures / tables can be floated on page
+\usepackage{hyperref}
 \usepackage{polyglossia}
 \setdefaultlanguage{danish}
 \usepackage[binary-units=true]{siunitx}
@@ -16,6 +17,10 @@
 \definecolor{lightgray}{gray}{0.5}
 \setlength{\parindent}{0pt}
 
+\usepackage{titlesec}
+\titleformat{\chapter}{\huge\bf}{\thechapter.}{20pt}{\huge\bf}
+\titleclass{\chapter}{straight}
+
 \author{Janus Bo Andersen \thanks{ja67494@post.au.dk}}
 
 \begin{document}
@@ -25,7 +30,7 @@
 
     
     
-    \title{E3DSB miniprojekt 1 - tidsdomæneanalyse}
+    \title{E3DSB miniprojekt 1 - Tidsdomæneanalyse}
         
 
     \maketitle
@@ -37,17 +42,25 @@
 
     \begin{par}
 
-\section{Hello}
+\chapter{Indledning}
+Dette første miniprojekt i E3DSB behandler tre lydsignaler med analyser i tidsdomænet.
+Opgaven er løst individuelt.
+Matlab-koden kan findes på \url{https://github.com/janusboandersen/E3DSB}.
+
+\end{par} \vspace{1em}
+\begin{par}
+
+\chapter{Analyse}
 
 \end{par} \vspace{1em}
 
 
-\subsection*{E3DSB mini-projekt}
 
+\section{De tre signaler}
 
-
-\subsection*{Hello}
-
+\begin{par}
+Noget tekst
+\end{par} \vspace{1em}
 
 
 

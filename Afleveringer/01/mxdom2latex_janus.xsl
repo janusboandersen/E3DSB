@@ -27,6 +27,7 @@ Updated by Janus Bo Andersen, 2019
 \usepackage{color}
 \usepackage{amsfonts, amsmath, amssymb}
 \usepackage{float} %ensures that figures / tables can be floated on page
+\usepackage{hyperref}
 \usepackage{polyglossia}
 \setdefaultlanguage{danish}
 \usepackage[binary-units=true]{siunitx}
@@ -36,6 +37,10 @@ Updated by Janus Bo Andersen, 2019
 \sloppy
 \definecolor{lightgray}{gray}{0.5}
 \setlength{\parindent}{0pt}
+
+\usepackage{titlesec}
+\titleformat{\chapter}{\huge\bf}{\thechapter.}{20pt}{\huge\bf}
+\titleclass{\chapter}{straight}
 
 \author{Janus Bo Andersen \thanks{ja67494@post.au.dk}}
 
@@ -73,12 +78,13 @@ Updated by Janus Bo Andersen, 2019
         <xsl:if test="steptitle">
           <xsl:variable name="headinglevel">
             <xsl:choose>
-              <xsl:when test="steptitle[@style = 'document']">section</xsl:when>
-              <xsl:otherwise>subsection</xsl:otherwise>
+              <xsl:when test="steptitle[@style = 'document']">chapter</xsl:when>
+              <xsl:otherwise>section</xsl:otherwise>
             </xsl:choose>
           </xsl:variable>
 
-\<xsl:value-of select="$headinglevel"/>*{<xsl:apply-templates select="steptitle"/>}
+<!-- \<xsl:value-of select="$headinglevel"/>*{<xsl:apply-templates select="steptitle"/>} -->
+\<xsl:value-of select="$headinglevel"/>{<xsl:apply-templates select="steptitle"/>}
 
 </xsl:if>
 
@@ -106,7 +112,7 @@ Updated by Janus Bo Andersen, 2019
 
 <xsl:template name="contents">
   <xsl:param name="body-cells"/>
-\subsection*{Contents}
+\section{Contents}
 
 \begin{itemize}
 \setlength{\itemsep}{-1ex}<xsl:for-each select="$body-cells">
