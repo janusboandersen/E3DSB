@@ -1,0 +1,14 @@
+.DS_Store
+/u*/*
+/KRLO*/*
+/Data/*
+/Litteratur*/*
+/Eksempler*/*
+*.aux
+*.log
+*.toc
+*.mat
+*.wav
+*.m~
+*.eps
+*eps-converted-to.pdf
