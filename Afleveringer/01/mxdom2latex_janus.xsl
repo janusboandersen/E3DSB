@@ -32,6 +32,9 @@ Modified by Janus Bo Andersen, September 2019
 \usepackage{hyperref}
 \usepackage{fancyref}
 
+\usepackage{setspace}
+\onehalfspacing % line spacing (is equal to baselinestretch 1.33)
+
 \usepackage[numbered,framed]{matlab-prettifier}
 \lstset{
   language           = Matlab,
@@ -47,7 +50,7 @@ Modified by Janus Bo Andersen, September 2019
 %\definecolor{vertmatlab}{RGB}{28,160,55}
 %\definecolor{mauvematlab}{RGB}{155,71,239}
 %\definecolor{fond}{RGB}{246,246,246}
-\definecolor{lightgray}{gray}{0.5}
+\definecolor{lightgray}{gray}{0.7}
 
 \sloppy
 \setlength{\parindent}{0pt}
@@ -203,7 +206,7 @@ Modified by Janus Bo Andersen, September 2019
 <xsl:template match="mcodeoutput">
   <xsl:choose>
     <xsl:when test="substring(.,0,8)='&lt;latex&gt;'">
-      <xsl:value-of select="substring(.,8,string-length(.)-16)" disable-output-escaping="yes"/>
+      \end{par}<xsl:value-of select="substring(.,8,string-length(.)-16)" disable-output-escaping="yes"/>\begin{par}
     </xsl:when>
     <xsl:otherwise>
         \color{lightgray} \begin{verbatim}<xsl:value-of select="."/>\end{verbatim} \color{black}
