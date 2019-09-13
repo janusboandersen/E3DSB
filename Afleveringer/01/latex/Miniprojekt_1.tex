@@ -2,19 +2,33 @@
 
 \documentclass[a4paper]{report}
 \usepackage[margin=1in]{geometry}
+\usepackage{polyglossia}
+\setdefaultlanguage{danish}
 \usepackage{graphicx}
-\usepackage{color}
+\usepackage{xcolor}
 \usepackage{amsfonts, amsmath, amssymb}
 \usepackage{float} %ensures that figures / tables can be floated on page
 \usepackage{hyperref}
-\usepackage{polyglossia}
-\setdefaultlanguage{danish}
+\usepackage{fancyref}
+
+\usepackage[numbered,framed]{matlab-prettifier}
+\lstset{
+  language           = Matlab,
+  style              = Matlab-editor,
+  basicstyle         = \mlttfamily,
+  escapechar         = `,
+  mlshowsectionrules = true
+}
+
 \usepackage[binary-units=true]{siunitx}
 \sisetup{detect-all}
 
+%\definecolor{vertmatlab}{RGB}{28,160,55}
+%\definecolor{mauvematlab}{RGB}{155,71,239}
+%\definecolor{fond}{RGB}{246,246,246}
+\definecolor{lightgray}{gray}{0.5}
 
 \sloppy
-\definecolor{lightgray}{gray}{0.5}
 \setlength{\parindent}{0pt}
 
 \usepackage{titlesec}
@@ -24,8 +38,8 @@
 \author{Janus Bo Andersen \thanks{ja67494@post.au.dk}}
 
 \begin{document}
-\pagenumbering{roman}
 
+\pagenumbering{roman}
 
 
     
@@ -45,22 +59,80 @@
 \chapter{Indledning}
 Dette første miniprojekt i E3DSB behandler tre lydsignaler med analyser i tidsdomænet.
 Opgaven er løst individuelt.
-Matlab-koden kan findes på \url{https://github.com/janusboandersen/E3DSB}.
+Dette dokument er genereret af Matlab med en XSL-template.
+Matlab-kode og template findes på \url{https://github.com/janusboandersen/E3DSB}.
+Følgende lydklip benyttes \\
+\begin{table}[H]
+\centering
+\begin{tabular}{| c | c | c | c |} \hline
+Signal & Skæring & Genre & Samplingsfrekv. \\ \hline
+$s_1$ & Spit Out the Bone & Thrash-metal & 44.1 \si{\kilo\hertz} \\ \hline
+$s_2$ & The Wayfaring Stranger & Bluegrass & 96 \si{\kilo\hertz} \\ \hline
+$s_3$ & Svanesøen & Klassisk & 44.1 \si{\kilo\hertz} \\ \hline
+\end{tabular}\caption{3 signaler behandlet i analysen}\label{tab:lydklip}\end{table}
 
-\end{par} \vspace{1em}
+\end{par} 
 \begin{par}
 
-\chapter{Analyse}
+\chapter{Analyser}
+Før analyser ryddes der op i \texttt{Workspace}.\\
 
-\end{par} \vspace{1em}
+\end{par} 
+
+\begin{lstlisting}[language=Matlab, style=Matlab-editor]
+clc; clear all; close all;
+\end{lstlisting}
 
 
 
-\section{De tre signaler}
+\section{Afspilning}
 
-\begin{par}
-Noget tekst
-\end{par} \vspace{1em}
+        \begin{par}
+
+Filen åbnes med \texttt{load}.
+Signaler kan afspilles med \texttt{soundsc(signal, fs)}.
+Samplingsfrekvensen $f_s$ sættes efter værdi i tabel~\ref{tab:lydklip}.
+
+\end{par} 
+
+\begin{lstlisting}[language=Matlab, style=Matlab-editor]
+load('miniprojekt1_lydklip.mat')
+soundsc(s1, fs_s1)
+clear('sound');
+\end{lstlisting}
+
+
+
+\section{Bestemmelse af antal samples}
+
+        
+
+
+\section{Plot af signal}
+
+        
+
+
+\section{Min, max, RMS og energi}
+
+        
+
+
+\section{Venstre vs. højre kanal (for $s_1$)}
+
+        
+
+
+\section{Nedsampling af signal (for $s_1$)}
+
+        
+
+
+\section{Fade-out med envelopes (for $s_2$)}
+
+        \begin{par}
+\chapter{Konklusion}
+\end{par} 
 
 
 

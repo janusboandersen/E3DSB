@@ -7,7 +7,7 @@ Use the XSLT command to perform the conversion.
 Ned Gulley and Matthew Simoneau, September 2003
 Copyright 1984-2013 The MathWorks, Inc.
 
-Updated by Janus Bo Andersen, 2019
+Modified by Janus Bo Andersen, September 2019
 
 -->
 
@@ -23,19 +23,33 @@ Updated by Janus Bo Andersen, 2019
 
 \documentclass[a4paper]{report}
 \usepackage[margin=1in]{geometry}
+\usepackage{polyglossia}
+\setdefaultlanguage{danish}
 \usepackage{graphicx}
-\usepackage{color}
+\usepackage{xcolor}
 \usepackage{amsfonts, amsmath, amssymb}
 \usepackage{float} %ensures that figures / tables can be floated on page
 \usepackage{hyperref}
-\usepackage{polyglossia}
-\setdefaultlanguage{danish}
+\usepackage{fancyref}
+
+\usepackage[numbered,framed]{matlab-prettifier}
+\lstset{
+  language           = Matlab,
+  style              = Matlab-editor,
+  basicstyle         = \mlttfamily,
+  escapechar         = `,
+  mlshowsectionrules = true
+}
+
 \usepackage[binary-units=true]{siunitx}
 \sisetup{detect-all}
 
+%\definecolor{vertmatlab}{RGB}{28,160,55}
+%\definecolor{mauvematlab}{RGB}{155,71,239}
+%\definecolor{fond}{RGB}{246,246,246}
+\definecolor{lightgray}{gray}{0.5}
 
 \sloppy
-\definecolor{lightgray}{gray}{0.5}
 \setlength{\parindent}{0pt}
 
 \usepackage{titlesec}
@@ -45,8 +59,8 @@ Updated by Janus Bo Andersen, 2019
 \author{Janus Bo Andersen \thanks{ja67494@post.au.dk}}
 
 \begin{document}
-\pagenumbering{roman}
 
+\pagenumbering{roman}
 
 
     <!-- Determine if the there should be an introduction section. -->
@@ -86,7 +100,7 @@ Updated by Janus Bo Andersen, 2019
 <!-- \<xsl:value-of select="$headinglevel"/>*{<xsl:apply-templates select="steptitle"/>} -->
 \<xsl:value-of select="$headinglevel"/>{<xsl:apply-templates select="steptitle"/>}
 
-</xsl:if>
+        </xsl:if>
 
         <!-- Contents of each cell -->
         <xsl:apply-templates select="text"/>
@@ -128,8 +142,9 @@ Updated by Janus Bo Andersen, 2019
 
 <!-- HTML Tags in text sections -->
 <xsl:template match="p">\begin{par}
-<xsl:apply-templates/><xsl:text>
-\end{par} \vspace{1em}
+<xsl:apply-templates/>
+<xsl:text>
+\end{par} <!-- \ vspace{1em} -->
 </xsl:text>
 </xsl:template>
 
@@ -178,9 +193,10 @@ Updated by Janus Bo Andersen, 2019
 
 <!-- Code input and output -->
 
-<xsl:template match="mcode">\begin{verbatim}
+<xsl:template match="mcode">
+\begin{lstlisting}[language=Matlab, style=Matlab-editor]
 <xsl:value-of select="."/>
-\end{verbatim}
+\end{lstlisting}
 </xsl:template>
 
 
@@ -199,7 +215,9 @@ Updated by Janus Bo Andersen, 2019
 <!-- Figure and model snapshots -->
 
 <xsl:template match="img">
-\includegraphics [width=4in]{<xsl:value-of select="@src"/>}
+\begin{center}
+    \includegraphics [width=5in]{<xsl:value-of select="@src"/>}
+\end{center}
 </xsl:template>
 
 <!-- Colors for syntax-highlighted input code -->
