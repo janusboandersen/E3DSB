@@ -434,16 +434,16 @@ figure(2)
 subplot(2,1,1);
 plot(lin_env2);
 ylabel('$-\alpha n$','Interpreter','Latex', 'FontSize', 15);
-dim1 = [.2 .4 .3 .3];                   % Placering af annotation
-str_lin = sprintf('a = %.3g', 8.48e-7);
-annotation('textbox',dim1,'String',str_lin,'FitBoxToText','on');
+dim1 = [.2 .45 .3 .3];                   % Placering af annotation
+str_lin = '$\alpha = 8.48\cdot10^{-7}$';
+annotation('textbox',dim1,'Interpreter', 'Latex', 'String',str_lin,'FitBoxToText','on', 'FontSize', 15);
 
 subplot(2,1,2);
 plot(exp_env2);
 ylabel('$\exp(-\gamma n)$','Interpreter','Latex', 'FontSize', 15);
-str_exp = sprintf('g = %.3g', gamma);
+str_exp = '$\gamma = 2.67\cdot10^{-6}$';
 dim2 = [.2 .13 .0 .3];                  % Placering af annotation
-annotation('textbox',dim2,'String',str_exp,'FitBoxToText','on');
+annotation('textbox',dim2,'Interpreter', 'Latex', 'String',str_exp,'FitBoxToText','on', 'FontSize', 15);
 
 xlabel('$n$','Interpreter','Latex', 'FontSize', 15);
 sgtitle('Sammenligning af envelopes', 'Interpreter', 'Latex', 'FontSize', 20);
@@ -477,7 +477,7 @@ soundsc(s2_exp_fade, fs_s2);
 clear sound;
 \end{lstlisting}
 \begin{par}
-Det er nok smag og behag med de to forskellige typer. Jeg bryder mig bedst om den eksponentielle fade-out, for den hurtigere får reduceret lydstyrken. Det mest naturlige ville nok være en logaritmisk fade, der matcher vores ørers og hjernes evne til at opfatte forskelle i lydniveauer, hvilket netop oftest er ``efter'' logaritimisk skala.
+Det er nok smag og behag med de to forskellige typer. Jeg bryder mig bedst om den eksponentielle fade-out, fordi den hurtigere reducerer lydstyrken. Det mest naturlige ville nok være en logaritmisk fade, der matcher vores ørers og hjernes evne til at opfatte forskelle i lydniveauer, hvilket netop oftest er ``efter'' logaritimisk skala.
 \end{par} 
 \begin{par}
 \chapter{Konklusion}
