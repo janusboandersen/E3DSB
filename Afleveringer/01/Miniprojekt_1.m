@@ -165,16 +165,185 @@ T = table(signaler, N, M, minima, maxima, energi, rms)         % resultater
 % 
 %% Venstre vs. højre kanal (for $s_1$)
 %%
+% <latex>
+% Man kan eksperimentere lidt for at finde ud af hvilken kanal, der er
+% højre, og hvilken der er venstre. 
+% Man kan jo fx fylde den ene kanal med nuller, og så se, hvad der ``sker''.
+% Stereo bibeholdes ved at fastholde matricens $N\times K$-størrelse, men
+% med en kanal ``nullet''.\\
+% </latex>
 %
+s1_left_stereo = s1;
+s1_left_stereo(:,2) = zeros(N(1),1); % Nuller "højre" via 2. kanal
+soundsc(s1_left_stereo, fs_s1);      % Bingo, det virkede
+clear sound;
+
+s1_right_stereo = s1;
+s1_right_stereo(:,1) = zeros(N(1),1); % Nuller "venstre" via 1. kanal
+soundsc(s1_right_stereo, fs_s1);      
+clear sound;
+
+%%
+% <latex>
+% Differensen mellem kanalerne kan også aflyttes.
+% Vi tager venstre minus højre.\\
+% </latex>
+%
+s1_diff_mono = s1(:,1) - s1(:,2);       % venstre minus højre
+soundsc(s1_diff_mono, fs_s1);
+clear sound;
+
+%%
+% <latex>
+% Differensen mellem kanalerne giver en effekt af at lyden ``kommer'' et
+% bestemt sted fra, rumligt/spatialt (eller evt. at der er en genklang).
+% Fx vil en lille forsinkelse i den højre kanal snyde hjernen til at tro, at
+% lyden kom fra et sted tættere på det venstre øre.
+% Forsinkelse kan derfor benyttes til at ``flytte'' instrumenternes lyd i
+% rummet.\\\\
+% I dette lydklip oplever jeg, at alle instrumenter er tilstede i både
+% venstre og højre kanal, men i forskellig grad. Differensen afslører, at:
+% \begin{itemize}
+% \item Den hurtige lyd af J. Hetfields downpicking/strumming bevæger sig
+% mellem kanalerne.
+% \item Det gør lyden af L. Ulrichs lilletromme til dels også.
+% \item Det giver en fornemmelse af at være omringet af lyden.
+% \item Desuden er L. Ulrichs hi-hat placeret til venstre for midten på enkeltslagene, 
+% men til højre for midten på triple-slaget.
+% \end{itemize}
+% Hvis klippet havde været længere, havde vi også tydeligt hørt den fede og
+% lidt mere melodiske del af guitarriffet (som starter ca. 40 sekunder
+% inde) placeret i venstre kanal.\\
+% </latex>
 %
 %% Nedsampling af signal (for $s_1$)
 %%
-% 
+% <latex>
+% Der laves en nedsampling af signalet med en faktor 4.
+% Funktionen \texttt{resample(signal, fs\_ny, fs\_gl)}~ benyttes.\\
+% </latex>
+
+fs_s1_ny = fs_s1 / 4;                           % reduktion med faktor 4
+s1_downsample = resample(s1, fs_s1_ny, fs_s1);  % downsampling
+txt = sprintf("Nyt antal samples: %d", length(s1_downsample));
+disp(txt);
+
+soundsc(s1_downsample, fs_s1_ny);               % afspil nyt klip
+clear sound;
+%%
+% Det høres tydeligt, at downsampling har reduceret lydkvaliteten.
+% Klippet lyder nu mere som internetradio i 90'erne, eller en dårlig
+% YouTube-video.
 %
 %% Fade-out med envelopes (for $s_2$)
 %%
+% <latex>
+% Vi vil lave fade-out over den sidste tredjedel af signalet.
+% Dvs. cirka de sidste 12 af de i alt 35 sekunder.
+% Helt præcist skal indhyldningskurven påvirke de sidste 1,12 mio. samples.
+% Altså $N_{env,2} = \frac{1}{3} N_2 = 3360000/3 = 1120000$.
+% Der benyttes to forskellige metoder:
+% \begin{itemize}
+% \item Lineær envelope fra 100 til 5 pct.
+% \item Eksponentielt aftagende envelope fra 100 til 5 pct.
+% \end{itemize}
+% Metoden bliver at lave envelopes med den ønskede længde, og så applicere
+% dem på den sidste tredjedel af signalet.\\
+% </latex>
 %
+%%
+% <latex>\subsection{Lineær envelope}</latex>
+%%
+% <latex>
+% Der skal over $N_{env,2}$~ samples foretages en \textbf{lineær} ``afskrivning''.
+% Funktionen er $f_{lin}(n) = -\alpha n$ for $n=0,\ldots,N_{env,2}-1$.
+% Yderpunkterne sættes $f_{lin}(0) = 1$ og $f_{lin}(N_{env,2}-1) = 0.05$.
+% Det giver en hældning på $ \alpha = -\frac{(0.05-1.00)}{N_{env,2}-1}=8.48\cdot 10^{-7}$.\\\\
+% Men det er naturligvis nemmere bare at bruge \texttt{linspace}...
+% </latex>
+%
+N_env2 = N(2)/3;                            % antal samples der skal filtr.
+lin_env2 = linspace(1.0, 0.05, N_env2)';    % lineær envelope
+
+%%
+% <latex>\subsection{Eksponentiel envelope}</latex>
+%%
+% <latex>
+% Der skal over $N_{env,2}$~ samples foretages en \textbf{eksponentiel} ``afskrivning''.
+% Funktionen er $g_{exp}(n) = \exp(-\gamma n)$ for $n=0,\ldots,N_{env,2}-1$.
+% Yderpunkterne sættes $g_{exp}(0) = 1$ og $g_{exp}(N_{env,2}-1) = 0.05$.
+% Det giver med lidt omskrivning en faktor på $ \gamma = -\frac{\ln(0.05)}{N_{env,2}-1}=2.67\cdot 10^{-6}$.\\\\
+% </latex>
+% 
+gamma = -log(0.05)/(N_env2 - 1);            % nb. ln = log()
+exp_env2 = exp(-gamma*[0:N_env2-1])';       % vektoriseret exp envelope
+
+%%
+% 
+%%
+% <latex>\subsection{Sammenligning af envelopes}</latex>
+%%
+% <latex>
+% De to envelopes (indhyldningskurver) plottes, så vi kan se, om vi har
+% fået hvad vi ønskede...\\
+% </latex>
+%
+figure(2)
+subplot(2,1,1);
+plot(lin_env2);
+ylabel('$-\alpha n$','Interpreter','Latex', 'FontSize', 15);
+dim1 = [.2 .4 .3 .3];                   % Placering af annotation
+str_lin = sprintf('a = %.3g', 8.48e-7);
+annotation('textbox',dim1,'String',str_lin,'FitBoxToText','on');
+
+subplot(2,1,2);
+plot(exp_env2);
+ylabel('$\exp(-\gamma n)$','Interpreter','Latex', 'FontSize', 15);
+str_exp = sprintf('g = %.3g', gamma);
+dim2 = [.2 .13 .0 .3];                  % Placering af annotation
+annotation('textbox',dim2,'String',str_exp,'FitBoxToText','on');
+
+xlabel('$n$','Interpreter','Latex', 'FontSize', 15);
+sgtitle('Sammenligning af envelopes', 'Interpreter', 'Latex', 'FontSize', 20);
+
+%%
+% Envelopes påtrykkes signalet direkte, selvom man nok også kunne have
+% brugt |filter|-funktionen.
+%
+pad_ones = ones([2*N_env2, 1]);         % pad med 1-taller når sig. ej ændr
+tot_lin_fade = [pad_ones; lin_env2];    % sammensæt for hele serien
+tot_exp_fade = [pad_ones; exp_env2];
+
+% Fade påtrykkes hver kanal
+s2_lin_fade = s2;
+s2_exp_fade = s2;
+for k=1:2
+    s2_lin_fade(:,k) = s2_lin_fade(:,k) .* tot_lin_fade;  % påtryk lineær
+    s2_exp_fade(:,k) = s2_exp_fade(:,k) .* tot_exp_fade;  % påtryk eksp.
+end
+
+% Afspil resultaterne
+soundsc(s2_lin_fade, fs_s2);
+clear sound;
+
+soundsc(s2_exp_fade, fs_s2);
+clear sound;
+
+%%
+% Det er nok smag og behag med de to forskellige typer. Jeg bryder mig
+% bedst om den eksponentielle fade-out, for den hurtigere får reduceret
+% lydstyrken. Det mest naturlige ville nok være en logaritmisk fade, der
+% matcher vores ørers og hjernes evne til at opfatte forskelle i
+% lydniveauer, hvilket netop oftest er ``efter'' logaritimisk skala.
 %
 %%
 % <latex>\chapter{Konklusion}</latex>
-% 
+%%
+% <latex>
+% Dette miniprojekt har vist, hvordan man kan arbejde med digitale lydsignaler i
+% Matlab.\\\\
+% Det er interessant, hvordan relativt simple matematiske metoder kan
+% benyttes til at analysere og behandle digitale lydsignaler. Matlab gør
+% arbejdet nemt for os.
+% </latex>
+%  
