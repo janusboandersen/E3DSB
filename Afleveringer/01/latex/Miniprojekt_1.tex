@@ -114,40 +114,46 @@ clear('sound');                     % stop playback
 
 Et sample er en værdi, eller sæt af værdier, fra et givent punkt i tid.
 Alle tre signaler er i stereo, så hver sample har to værdier.\\\\
-Signalerne er repræsenteret som $N\times M$-matricer.
+Signalerne er repræsenteret som $N\times K$-matricer.
 Antallet af rækker, $N$, repræsenterer antallet af samples.
 $N$ kan findes med \texttt{length(matrix)}.
-Antallet af søljer, $M$ er antallet af kanaler.
-$N$ og $M$ kan bestemmes på en gang via \texttt{[N, M] = size(matrix)}.
-Vi kan også bare benytte, at der er to kanaler, så $M = 2N$. \\\\
+Antallet af søljer, $K$, er antallet af kanaler (værdier per sample).
+Samlet antal af værdier i matricen er $NK$, antaget at ingen er \texttt{NaN}.\\
+
+\end{par} 
+\begin{par}
+
+$N$ og $K$ kan bestemmes på en gang via \texttt{[N, K] = size(matrix)}.
+Vi kan også bare benytte, at vi ved, at der er to kanaler, så $K = 2$. \\\\
 Data samles i en tabel. Den kan udvides med signalernes afspilningstider.\\\\
 Der er altså fx 1,323 millioner samples i signal $s_1$.
 Signal $s_2$, som dog har højere samplingsfrekvens, har 2,5 gange flere
 samples.
-De tre lydklip har afspilningstider på mellem 30 og 35 sek.\\\\
+De tre lydklip har afspilningstider på mellem 30 og 35 sek.\\
 
 \end{par} 
 
 \begin{lstlisting}[language=Matlab, style=Matlab-editor]
 signaler = {'s1'; 's2'; 's3'};
-N = [length(s1); length(s2); length(s3)];       % antal samples
-M = 2*N;                                        % antal værdier
-samplingsfrek = [fs_s1; fs_s2; fs_s3];          % f_s fra .mat-fil
-tid = N./samplingsfrek;                         % spilletid i sek.
-T = table(signaler, N, M, samplingsfrek, tid)   % vis en datatabel
+N = [length(s1); length(s2); length(s3)];           % antal samples
+K = [2; 2; 2];                                      % antal kanaler
+M = N.*K;                                           % antal værdier
+samplingsfrek = [fs_s1; fs_s2; fs_s3];              % f_s fra .mat-fil
+tid = N./samplingsfrek;                             % spilletid i sek.
+T = table(signaler, N, K, M, samplingsfrek, tid)    % vis en datatabel
 \end{lstlisting}
 
         \color{lightgray} \begin{verbatim}
 T =
 
-  3×5 table
+  3×6 table
 
-    signaler        N             M         samplingsfrek    tid
-    ________    __________    __________    _____________    ___
+    signaler        N         K        M         samplingsfrek    tid
+    ________    __________    _    __________    _____________    ___
 
-      's1'       1.323e+06     2.646e+06        44100        30 
-      's2'        3.36e+06      6.72e+06        96000        35 
-      's3'      1.4112e+06    2.8224e+06        44100        32 
+      's1'       1.323e+06    2     2.646e+06        44100        30 
+      's2'        3.36e+06    2      6.72e+06        96000        35 
+      's3'      1.4112e+06    2    2.8224e+06        44100        32 
 
 \end{verbatim} \color{black}
     

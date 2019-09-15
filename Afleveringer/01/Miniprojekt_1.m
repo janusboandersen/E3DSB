@@ -38,32 +38,39 @@ soundsc(s1, fs_s1);                 % playback startes sådan her
 clear('sound');                     % stop playback
 
 %% Bestemmelse af antal samples
+%%
 % <latex>
 % Et sample er en værdi, eller sæt af værdier, fra et givent punkt i tid.
 % Alle tre signaler er i stereo, så hver sample har to værdier.\\\\
-% Signalerne er repræsenteret som $N\times M$-matricer.
+% Signalerne er repræsenteret som $N\times K$-matricer.
 % Antallet af rækker, $N$, repræsenterer antallet af samples.
 % $N$ kan findes med \texttt{length(matrix)}.
-% Antallet af søljer, $M$ er antallet af kanaler.
-% $N$ og $M$ kan bestemmes på en gang via \texttt{[N, M] = size(matrix)}.
-% Vi kan også bare benytte, at der er to kanaler, så $M = 2N$. \\\\
+% Antallet af søljer, $K$, er antallet af kanaler (værdier per sample).
+% Samlet antal af værdier i matricen er $NK$, antaget at ingen er \texttt{NaN}.\\
+% </latex>
+%%
+% <latex>
+% $N$ og $K$ kan bestemmes på en gang via \texttt{[N, K] = size(matrix)}.
+% Vi kan også bare benytte, at vi ved, at der er to kanaler, så $K = 2$. \\\\
 % Data samles i en tabel. Den kan udvides med signalernes afspilningstider.\\\\
 % Der er altså fx 1,323 millioner samples i signal $s_1$.
 % Signal $s_2$, som dog har højere samplingsfrekvens, har 2,5 gange flere
 % samples.
-% De tre lydklip har afspilningstider på mellem 30 og 35 sek.\\\\
+% De tre lydklip har afspilningstider på mellem 30 og 35 sek.\\
 % </latex>
 %
 %%
 %
 signaler = {'s1'; 's2'; 's3'};
-N = [length(s1); length(s2); length(s3)];       % antal samples
-M = 2*N;                                        % antal værdier
-samplingsfrek = [fs_s1; fs_s2; fs_s3];          % f_s fra .mat-fil
-tid = N./samplingsfrek;                         % spilletid i sek.
-T = table(signaler, N, M, samplingsfrek, tid)   % vis en datatabel
+N = [length(s1); length(s2); length(s3)];           % antal samples
+K = [2; 2; 2];                                      % antal kanaler
+M = N.*K;                                           % antal værdier
+samplingsfrek = [fs_s1; fs_s2; fs_s3];              % f_s fra .mat-fil
+tid = N./samplingsfrek;                             % spilletid i sek.
+T = table(signaler, N, K, M, samplingsfrek, tid)    % vis en datatabel
 
 %% Plot af signal
+%%
 % <latex> 
 % Når vi skal plotte signalerne med en tidsakse i sekunder, bruges det at
 % $t = n T_s = \frac{n}{f_s}$. Man bør plotte et diskret signal i et
@@ -106,6 +113,7 @@ sgtitle('Plot af $s_1$, $s_2$, $s_3$', 'Interpreter', 'Latex', 'FontSize', 20);
 % </latex>
 %
 %% Min, max, energi og RMS
+%%
 % <latex>
 % I dette afsnit beregnes forskellige mål på signalernes lydmæssige ``karakter''.\\
 % </latex>
@@ -156,12 +164,15 @@ T = table(signaler, N, M, minima, maxima, energi, rms)         % resultater
 % Og højttalerne bliver varmere af at spille Metallica end af Tchaikovsky.
 % 
 %% Venstre vs. højre kanal (for $s_1$)
+%%
 %
 %
 %% Nedsampling af signal (for $s_1$)
+%%
 % 
 %
 %% Fade-out med envelopes (for $s_2$)
+%%
 %
 %
 %%
