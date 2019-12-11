@@ -16,3 +16,4 @@
 *.m~
 *.eps
 *eps-converted-to.pdf
+*/ignore/*
